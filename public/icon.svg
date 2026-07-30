@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Warm Gold / Champagne Metallic Gradients -->
+    <linearGradient id="gold-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF1E4"/>
+      <stop offset="30%" stop-color="#E2D0B5"/>
+      <stop offset="70%" stop-color="#C5B091"/>
+      <stop offset="100%" stop-color="#9E8767"/>
+    </linearGradient>
+
+    <linearGradient id="gold-bright" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B8A17E"/>
+      <stop offset="50%" stop-color="#F5EBDA"/>
+      <stop offset="100%" stop-color="#AA9372"/>
+    </linearGradient>
+
+    <!-- Tattoo Pen Metallic Gradients -->
+    <linearGradient id="pen-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#403E45"/>
+      <stop offset="25%" stop-color="#1A191C"/>
+      <stop offset="50%" stop-color="#2D2B30"/>
+      <stop offset="75%" stop-color="#121113"/>
+      <stop offset="100%" stop-color="#252328"/>
+    </linearGradient>
+
+    <linearGradient id="silver-metal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6E8EC"/>
+      <stop offset="50%" stop-color="#9AA0A6"/>
+      <stop offset="100%" stop-color="#5F6368"/>
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Elements & Accents -->
+  <g fill="#A9927D">
+    <!-- Bottom Sparkle -->
+    <path d="M 256 432 L 259 443 L 270 446 L 259 449 L 256 460 L 253 449 L 242 446 L 253 443 Z"/>
+    <circle cx="256" cy="467" r="2"/>
+
+    <!-- Side Dots -->
+    <circle cx="44" cy="256" r="2.5"/>
+    <circle cx="468" cy="256" r="2.5"/>
+  </g>
+
+  <!-- T Letter -->
+  <path fill="url(#gold-light)" filter="url(#glow)" d="
+    M 225 180
+    C 260 170 300 170 335 180
+    C 345 183 350 180 352 172
+    L 355 172
+    L 350 205
+    L 344 205
+    C 342 195 336 188 322 186
+    C 295 182 285 195 285 220
+    L 285 320
+    C 285 338 292 342 305 342
+    L 305 348
+    L 250 348
+    L 250 342
+    C 263 342 270 338 270 320
+    L 270 220
+    C 270 195 255 184 230 186
+    C 222 187 218 190 215 198
+    L 210 198
+    Z
+  "/>
+
+  <!-- Tattoo Pen (Centered using transform) -->
+  <g transform="translate(256, 256)">
+    <!-- RCA Top Cap -->
+    <rect x="-12" y="-125" width="24" height="12" rx="3" fill="url(#silver-metal)"/>
+    <rect x="-8" y="-132" width="16" height="8" rx="2" fill="url(#gold-light)"/>
+
+    <!-- Main Motor Barrel -->
+    <rect x="-20" y="-115" width="40" height="75" rx="6" fill="url(#pen-body)"/>
+    <!-- Gold Rings -->
+    <rect x="-21" y="-110" width="42" height="4" fill="url(#gold-bright)"/>
+    <rect x="-21" y="-45" width="42" height="6" fill="url(#gold-bright)"/>
+    <path d="M -16 -115 L -10 -115 L -10 -40 L -16 -40 Z" fill="#FFF" opacity="0.12"/>
+
+    <!-- Center Adjustment Knurled Ring -->
+    <rect x="-18" y="-40" width="36" height="15" fill="url(#silver-metal)"/>
+    <g stroke="#333" stroke-width="1.5">
+      <line x1="-12" y1="-40" x2="-12" y2="-25"/>
+      <line x1="-6" y1="-40" x2="-6" y2="-25"/>
+      <line x1="0" y1="-40" x2="0" y2="-25"/>
+      <line x1="6" y1="-40" x2="6" y2="-25"/>
+      <line x1="12" y1="-40" x2="12" y2="-25"/>
+    </g>
+
+    <!-- Ergonomic Grip -->
+    <path d="M -22 -25 C -22 -25 -24 20 -20 50 L 20 50 C 24 20 22 -25 22 -25 Z" fill="url(#pen-body)"/>
+    <g stroke="#111" stroke-width="2">
+      <line x1="-22" y1="-15" x2="22" y2="-15"/>
+      <line x1="-22" y1="-5" x2="22" y2="-5"/>
+      <line x1="-23" y1="5" x2="23" y2="5"/>
+      <line x1="-22" y1="15" x2="22" y2="15"/>
+      <line x1="-21" y1="25" x2="21" y2="25"/>
+      <line x1="-20" y1="35" x2="20" y2="35"/>
+    </g>
+    <line x1="-19" y1="43" x2="19" y2="43" stroke="url(#gold-light)" stroke-width="2"/>
+
+    <!-- Cone & Plastic Cartridge -->
+    <path d="M -18 50 L -12 70 L 12 70 L 18 50 Z" fill="url(#silver-metal)"/>
+    <path d="M -12 70 L -8 100 L 8 100 L 12 70 Z" fill="#C0D6E4" opacity="0.4" stroke="url(#silver-metal)" stroke-width="1"/>
+    <path d="M -8 100 L -3 118 L 3 118 L 8 100 Z" fill="#8EA3B0" opacity="0.55"/>
+
+    <!-- Steel Needle Tip -->
+    <polygon points="0,132 -2.5,115 2.5,115" fill="url(#silver-metal)"/>
+    <line x1="0" y1="90" x2="0" y2="132" stroke="#E6E8EC" stroke-width="1.2"/>
+  </g>
+</svg>
