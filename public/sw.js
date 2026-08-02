@@ -117,93 +117,97 @@
 // });
 
 const CACHE_NAME = "tattoo-calc-v2";
-// Повертаємо pre-caching, щоб додаток гарантовано працював в офлайні з першої секунди
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/icon.svg", // Переконайтеся, що шлях збігається з вашим проектом
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icon.svg",
 ];
 
-// Інсталяція: завантажуємо базові файли в кеш
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }),
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE)),
   );
+  self.skipWaiting();
 });
 
-// Активація: очищення старих версій кешу (v1 тощо)
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
+    caches.keys().then((keys) =>
+      Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
+          return undefined;
         }),
-      );
-    }),
+      ),
+    ),
   );
   self.clients.claim();
 });
 
-// Перехоплення запитів
 self.addEventListener("fetch", (event) => {
-  // 1. Для HTML/Навігації: Спочатку Мережа (Network First)
-  if (
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  const isHtmlRequest =
     event.request.mode === "navigate" ||
-    event.request.headers.get("accept")?.includes("text/html")
-  ) {
+    event.request.headers.get("accept")?.includes("text/html");
+
+  if (isHtmlRequest) {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            // Оновлюємо кеш свіжою копією з мережі
-            cache.put(event.request, networkResponse.clone());
-            return networkResponse;
-          });
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return networkResponse;
         })
-        .catch(() => {
-          // Якщо мережі немає — віддаємо точну сторінку або корінь додатка
-          return caches
+        .catch(() =>
+          caches
             .match(event.request)
-            .then((cached) => cached || caches.match("/"));
-        }),
+            .then((cached) => cached || caches.match("/")),
+        ),
     );
     return;
   }
 
-  // 2. Для статичних ресурсів: Спочатку Кеш (Cache First)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
         return cachedResponse;
       }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200) {
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (
+            networkResponse &&
+            networkResponse.status === 200 &&
+            (networkResponse.type === "basic" ||
+              networkResponse.type === "cors")
+          ) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
           return networkResponse;
-        }
-
-        // Дозволяємо кешувати власні ('basic') та CORS-запити (шрифти/іконки з CDN)
-        if (
-          networkResponse.type === "basic" ||
-          networkResponse.type === "cors"
-        ) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      });
+        })
+        .catch(() => {
+          return caches.match("/icon-192.png");
+        });
     }),
   );
 });
+
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
+  if (event.data?.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
