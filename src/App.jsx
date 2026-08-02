@@ -311,7 +311,7 @@ export default function App() {
 
   // Estimated hours formula: Size & Complexity directly affect estimated hours
   const estimatedHours = Math.max(
-    0.5,
+    1,
     Math.round(((area * totalComplexityMultiplier) / 70) * 10) / 10,
   );
 
