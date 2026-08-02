@@ -26,15 +26,19 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" stroke="/src/main.jsx" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration with forced update check -->
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
             .register("/sw.js")
-            .then((reg) => console.log("SW Registered:", reg.scope))
+            .then((reg) => {
+              console.log("SW Registered:", reg.scope);
+              // Force SW update check on launch
+              reg.update();
+            })
             .catch((err) => console.log("SW Registration failed:", err));
         });
       }
