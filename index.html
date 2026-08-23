@@ -2,33 +2,23 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-
-    <!-- PWA & Mobile Meta Tags -->
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/pwa-source.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#4f46e5" />
     <meta name="mobile-web-app-capable" content="yes" />
-
-    <!-- iOS Safari Specific Settings -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
     <meta name="apple-mobile-web-app-title" content="Тату Кальк" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Tattoo Price Calculator</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- UI Елемент сповіщення (прихований за замовчуванням) -->
     <div
       id="pwa-update-toast"
       style="
@@ -65,70 +55,10 @@
           cursor: pointer;
           font-weight: 600;
           font-size: 13px;
-          transition: background 0.2s;
         "
       >
         Оновити
       </button>
     </div>
-
-    <!-- Розумна реєстрація Service Worker -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          let refreshing = false;
-
-          // Автоматично перезавантажуємо сторінку, коли новий SW активується і бере керування
-          navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (!refreshing) {
-              refreshing = true;
-              window.location.reload();
-            }
-          });
-
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((reg) => {
-              console.log("SW Registered:", reg.scope);
-
-              // Функція активації банера
-              const showUpdateBanner = (waitingWorker) => {
-                const toast = document.getElementById("pwa-update-toast");
-                const btn = document.getElementById("pwa-refresh-btn");
-
-                toast.style.display = "flex";
-                btn.addEventListener("click", () => {
-                  // Надсилаємо команду SKIP_WAITING у сервіс-воркер
-                  waitingWorker.postMessage({ type: "SKIP_WAITING" });
-                });
-              };
-
-              // Ситуація 1: Оновлення вже завантажене і чекає з минулого візиту
-              if (reg.waiting) {
-                showUpdateBanner(reg.waiting);
-              }
-
-              // Ситуація 2: Оновлення знайдено та завантажується прямо зараз
-              reg.addEventListener("updatefound", () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener("statechange", () => {
-                  // Показуємо банер лише тоді, коли файл повністю завантажився (installed)
-                  // і додаток вже мав старий активний воркер (щоб не показувати при першому візиті)
-                  if (
-                    newWorker.state === "installed" &&
-                    navigator.serviceWorker.controller
-                  ) {
-                    showUpdateBanner(newWorker);
-                  }
-                });
-              });
-
-              // Перевіряємо наявність оновлень на сервері щоразу при запуску
-              reg.update();
-            })
-            .catch((err) => console.log("SW Registration failed:", err));
-        });
-      }
-    </script>
   </body>
 </html>
